@@ -1,0 +1,196 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    
+    "data": {
+      "url": "https://raw.githubusercontent.com/abbasskak/Assignment2/main/GDP-A2.csv"
+    },
+     
+    
+    "vconcat": [
+      {
+        "height": 250,
+        "width": "container",
+        
+        
+       
+        "layer": [
+          {
+            "data": {
+              "format": {"type": "topojson", "feature": "ne_10m_admin_0_countries_usa"},
+              "url": "https://raw.githubusercontent.com/abbasskak/Assignment2/main/ne_10m_admin_0_countries_usa.topojson"
+              
+            },
+            
+  
+            
+            
+            "transform": [
+              {
+                "as": "Datanotavaible",
+                "calculate": "'No data from ' + datum.properties.NAME + ' for the selected year'"
+                
+              }
+              
+            ],
+            "encoding": {
+              "tooltip": {"field": "Datanotavaible"}
+            },
+            "mark": {
+              "stroke": "black",
+              "strokeWidth": 0,
+              "type": "geoshape",
+              "fill": "#f8faf5"
+              
+            }
+            
+          },
+          
+          {
+            "params": [
+              {
+                "select": {"encodings": ["description"], "type": "point" },
+                "name": "Countryselectionfunction"
+              }
+              
+            ],
+            "mark": {"stroke": "#fff", "strokeWidth": 0, "type": "geoshape"},
+            "transform": [
+              {
+                "filter": "year(datum.year) == slectyearfunction"
+              },
+              {
+                
+                "from": {
+                  "key": "properties.SU_A3",
+                  "data": {
+                    "format": {"type": "topojson", "feature": "ne_10m_admin_0_countries_usa"},
+                    "url": "https://raw.githubusercontent.com/abbasskak/Assignment2/main/ne_10m_admin_0_countries_usa.topojson"
+                    
+                  }
+                  
+                  
+                },
+                "lookup": "Code",
+                "as": "geo"
+              }
+              
+            ],
+            
+            "encoding": {
+              "tooltip": [
+                {"title": "Country", "field": "Countryname" },
+                {"title": "GDP (USD)", "field": "GDP", "format": ".4s" }
+                
+              ],
+              "shape": {"type": "geojson","field": "geo"},
+              "description": {"field": "Code"},
+              "fill": {
+                
+                "scale": {
+                  "domain": [0, 21500000000000],
+                  "type": "sqrt"
+                  
+                },
+                
+                "type": "quantitative",
+              
+              
+                
+                "field": "GDP"
+              }
+              
+            }
+          }
+        ],
+        "projection": {
+          "scale": {"expr": "Sizefunction"},
+          "type": "equirectangular",
+          "center": {"expr": "Location_of_center"}
+           }
+      },
+      {
+        
+        "height": 250,
+        "layer": [
+          {
+            "encoding": {
+              "x": {"field": "year", "axis": {"grid": false}},
+              "y": {"aggregate": "average", "field": "GDP",  "axis": {"format": ""}}
+              },
+            "transform": [
+              {"filter": {"param": "Countryselectionfunction"}}
+            ],
+            
+            
+            "mark": "line"
+          },
+          {
+            "mark": {
+              "x": "width","y": 0,"type": "text","align": "left"
+                
+                
+            },
+            "encoding": {
+              "text": {
+                "value": {"expr": "Countryselectionfunction.Code"},
+                "condition": {
+                  "value": "All Countries",
+                  "test": "!isDefined(Countryselectionfunction.Code)"
+                  
+                }
+                
+              }
+            }
+          }
+        ],
+        "width": "container"
+      }
+    ],
+    "params": [
+      {
+          "name": "Location_of_center",
+          "value": [0, 90],
+          "bind": {
+              "labels": ["Wolrd Center", "USA", "China"],
+              "name": " Choose Center: ",
+              "input": "select",
+              "options": [
+                  [0,90],
+                  [-95.712891, 90],
+                  [104.195397, 90]
+                  
+              ]
+              
+          }
+      },
+      {
+          "name": "Sizefunction",
+          
+          "bind": {
+              "input": "range",
+              "name": "Zoom: ",
+              "min": 75,
+              "step": 10,
+              "max": 145
+              
+              
+          },
+          "value": 75
+      },
+      {
+        "name": "slectyearfunction",
+        "bind": {
+          "name": "Year: ",
+          "input": "range",
+          "min": 2000,
+          "step": 1,
+          "max": 2020
+        },
+        "value": 2010
+      }
+      
+      
+    ],
+    "title": "GDP per Country" 
+  }
+  
