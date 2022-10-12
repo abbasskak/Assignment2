@@ -1,0 +1,32 @@
+{ "$schema":"https://vega.github.io/schema/vega-lite/v5.json", 
+"projection": {"type":"equalEarth"}, 
+
+
+
+"layer": [ { "data": { "url": "https://raw.githubusercontent.com/abbasskak/Assignment2/main/ne_10m_admin_0_countries_usa.topojson", "format": {"type":"topojson","feature": "ne_10m_admin_0_countries_usa"} }, "mark": {"stroke": "black", "type":"geoshape","fill":"white"} },
+
+{ "data": { "url": "https://raw.githubusercontent.com/abbasskak/Assignment2/main/Book6.csv" }, 
+
+              
+          
+"encoding": { 
+  "size": { "title":"GDP Size","scale": {"domain": [0,500000000000]},
+    "field":"2020", "type":"quantitative"
+    
+     },
+  "latitude": {"field":"Latitude","type": "quantitative"}, 
+  "longitude": {"field":"Longititude","type": "quantitative"}, 
+ 
+  
+  "tooltip": [
+      {"field": "Country Name", "type": "nominal", "title": "Region"},
+      {"field": "2020", "type": "quantitative",  "title": "GDP (USD) ", "format": ".3s"}]
+
+       },
+       "mark": "circle"
+        } ],
+        "title":"GDP per Region (USD)",
+        "width":700, 
+
+"height":520
+        }
